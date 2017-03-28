@@ -24,6 +24,7 @@ entrypoints:
 	FUCK_DOCKER = 8
 )
 
+// [exitcode] bytes
 var EXIT_CODE = []byte{91, 101, 120, 105, 116, 99, 111, 100, 101, 93, 32}
 
 func RunAndWait(
