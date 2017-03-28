@@ -99,11 +99,6 @@ func main() {
 			Usage: "where to run",
 		},
 		&cli.StringFlag{
-			Name:  "image",
-			Usage: "use image",
-			Value: "hub.ricebook.net/lambda/python:centos-2017.03.21",
-		},
-		&cli.StringFlag{
 			Name:  "repo",
 			Usage: "repo location",
 		},
@@ -115,13 +110,18 @@ func main() {
 			Name:  "command",
 			Usage: "how to run it",
 		},
-		&cli.StringFlag{
-			Name:  "network",
-			Usage: "SDN name",
-		},
 		&cli.StringSliceFlag{
 			Name:  "env",
 			Usage: "set envs can use multiple times",
+		},
+		&cli.StringFlag{
+			Name:  "network",
+			Usage: "SDN name (default: define in config file)",
+		},
+		&cli.StringFlag{
+			Name:  "image",
+			Usage: "use image",
+			Value: "hub.ricebook.net/lambda/python:centos-2017.03.21",
 		},
 		&cli.Float64Flag{
 			Name:  "cpu",

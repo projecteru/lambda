@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 
 	"golang.org/x/net/context"
@@ -64,9 +65,9 @@ func RunAndWait(
 		data := msg.Data[FUCK_DOCKER:]
 		define := msg.Data[:FUCK_DOCKER]
 		if define[0] == 1 {
-			log.Infof("%s", data)
+			fmt.Fprintf(os.Stdout, "%s\n", data)
 		} else {
-			log.Errorf("%s", data)
+			fmt.Fprintf(os.Stderr, "%s\n", data)
 		}
 	}
 	return
