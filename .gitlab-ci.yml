@@ -11,9 +11,9 @@ before_script:
   - "ln -s $CI_PROJECT_DIR $GOPATH/src/gitlab.ricebook.net/platform/lambda"
 rpm:
   script:
-    - go build -ldflags "-s -w" -a -tags netgo -installsuffix netgo -o lambda
+    - "make build"
     - "echo 'start make rpm'"
-    - "./make"
+    - "./make-rpm"
     - "echo 'make rpm done'"
   artifacts:
     paths:
