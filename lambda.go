@@ -62,8 +62,10 @@ func runLambda(c *cli.Context) error {
 	}
 
 	pod, image, name, command, network, envs, cpu, mem, count, timeout := utils.GetParams(c)
+	volumes := []string{}
 	if admin {
 		pod = config.AdminPod
+		volumes = config.Volumes
 	}
 	if network == "" {
 		network = config.DefaultSDN
@@ -73,7 +75,8 @@ func runLambda(c *cli.Context) error {
 	}
 
 	server := utils.PickServer(config.Servers)
-	code := rpc.RunAndWait(server, pod, image, name, command, network, envs, cpu, mem, count, timeout)
+	code := rpc.RunAndWait(server, pod, image, name, command,
+		network, envs, volumes, cpu, mem, count, timeout)
 	if code == 0 {
 		return nil
 	}

@@ -6,4 +6,5 @@ type Config struct {
 	AdminPod   string   `yaml:"adminpod"`   // Where to run privilege code
 	DefaultSDN string   `yaml:"defaultsdn"` // Default SDN
 	BaseImage  string   `yaml:"baseimage"`  // Base Image
+	Volumes    []string `yaml:"volumes"`    // Volume used by admin
 }
