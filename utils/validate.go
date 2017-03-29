@@ -5,7 +5,7 @@ import (
 	"gopkg.in/urfave/cli.v2"
 )
 
-func GetParams(c *cli.Context) (pod, image, repo, name, command, network string,
+func GetParams(c *cli.Context) (pod, image, name, command, network string,
 	envs []string, cpu float64, mem int64, count int) {
 
 	pod = c.String("pod")
@@ -24,7 +24,6 @@ func GetParams(c *cli.Context) (pod, image, repo, name, command, network string,
 	}
 
 	network = c.String("network")
-	repo = c.String("repo")
 	image = c.String("image")
 	cpu = c.Float64("cpu")
 	mem = c.Int64("mem")

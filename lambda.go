@@ -61,7 +61,7 @@ func runLambda(c *cli.Context) error {
 		log.Fatal(err)
 	}
 
-	pod, image, repo, name, command, network, envs, cpu, mem, count := utils.GetParams(c)
+	pod, image, name, command, network, envs, cpu, mem, count := utils.GetParams(c)
 	if admin {
 		pod = config.AdminPod
 	}
@@ -70,7 +70,7 @@ func runLambda(c *cli.Context) error {
 	}
 
 	server := utils.PickServer(config.Servers)
-	code := rpc.RunAndWait(server, pod, image, repo, name, command, network, envs, cpu, mem, count)
+	code := rpc.RunAndWait(server, pod, image, name, command, network, envs, cpu, mem, count)
 	if code == 0 {
 		return nil
 	}
@@ -99,10 +99,6 @@ func main() {
 			Usage: "where to run",
 		},
 		&cli.StringFlag{
-			Name:  "repo",
-			Usage: "repo location",
-		},
-		&cli.StringFlag{
 			Name:  "name",
 			Usage: "name for this lambda",
 		},
@@ -120,8 +116,7 @@ func main() {
 		},
 		&cli.StringFlag{
 			Name:  "image",
-			Usage: "use image",
-			Value: "hub.ricebook.net/lambda/python:centos-2017.03.21",
+			Usage: "use image (default: define in config file)",
 		},
 		&cli.Float64Flag{
 			Name:  "cpu",

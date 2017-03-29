@@ -28,7 +28,7 @@ entrypoints:
 var EXIT_CODE = []byte{91, 101, 120, 105, 116, 99, 111, 100, 101, 93, 32}
 
 func RunAndWait(
-	server, pod, image, repo, name, command, network string,
+	server, pod, image, name, command, network string,
 	envs []string, cpu float64, mem int64, count int) (code int) {
 
 	conn, err := grpc.Dial(server, grpc.WithInsecure())
@@ -38,7 +38,7 @@ func RunAndWait(
 	defer conn.Close()
 
 	c := pb.NewCoreRPCClient(conn)
-	opts := generateOpts(pod, image, repo, name, command, network, envs, cpu, mem, count)
+	opts := generateOpts(pod, image, name, command, network, envs, cpu, mem, count)
 
 	resp, err := c.RunAndWait(context.Background(), opts)
 	if err != nil {
@@ -74,14 +74,12 @@ func RunAndWait(
 	return
 }
 
-func generateOpts(pod, image, repo, name, command, network string,
+func generateOpts(pod, image, name, command, network string,
 	envs []string, cpu float64, mem int64, count int) *pb.DeployOptions {
 	for i, env := range envs {
 		envs[i] = fmt.Sprintf("LAMBDA_%s", env)
 	}
-	if repo != "" {
-		envs = append(envs, fmt.Sprintf("LAMBDA_REPO=%s", repo))
-	}
+
 	opts := &pb.DeployOptions{
 		Specs:      generateSpecs(name, command),
 		Appname:    "lambda",
