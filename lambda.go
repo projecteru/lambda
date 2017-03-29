@@ -68,6 +68,9 @@ func runLambda(c *cli.Context) error {
 	if network == "" {
 		network = config.DefaultSDN
 	}
+	if image == "" {
+		image = config.BaseImage
+	}
 
 	server := utils.PickServer(config.Servers)
 	code := rpc.RunAndWait(server, pod, image, name, command, network, envs, cpu, mem, count)
