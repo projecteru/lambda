@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"time"
 
 	"golang.org/x/net/context"
 
@@ -29,7 +30,7 @@ var EXIT_CODE = []byte{91, 101, 120, 105, 116, 99, 111, 100, 101, 93, 32}
 
 func RunAndWait(
 	server, pod, image, name, command, network string,
-	envs []string, cpu float64, mem int64, count int) (code int) {
+	envs []string, cpu float64, mem int64, count, timeout int) (code int) {
 
 	conn, err := grpc.Dial(server, grpc.WithInsecure())
 	if err != nil {
@@ -42,8 +43,12 @@ func RunAndWait(
 
 	resp, err := c.RunAndWait(context.Background(), opts)
 	if err != nil {
-		log.Fatal("Run failed %v", err)
+		log.Fatalf("Run failed %v", err)
 	}
+
+	// log container ids and clean
+	containerIDs := NewCIDs()
+	time.AfterFunc(time.Duration(timeout)*time.Second, func() { Remove(server, containerIDs) })
 
 	for {
 		msg, err := resp.Recv()
@@ -55,20 +60,24 @@ func RunAndWait(
 			log.Fatalf("Message invalid %v", err)
 		}
 
+		// log container id
+		containerIDs.Add(msg.ContainerId)
+
 		if bytes.HasPrefix(msg.Data, EXIT_CODE) {
 			ret := string(bytes.TrimLeft(msg.Data, string(EXIT_CODE)))
 			code, err = strconv.Atoi(ret)
 			if err != nil {
-				log.Fatal("exit with unknown %s %s", ret, err)
+				log.Fatalf("exit with unknown %s %s", ret, err)
 			}
 			continue
 		}
 		data := msg.Data[FUCK_DOCKER:]
+		id := msg.ContainerId[:7]
 		define := msg.Data[:FUCK_DOCKER]
 		if define[0] == 1 {
-			fmt.Fprintf(os.Stdout, "%s\n", data)
+			fmt.Fprintf(os.Stdout, "%s %s\n", id, data)
 		} else {
-			fmt.Fprintf(os.Stderr, "%s\n", data)
+			fmt.Fprintf(os.Stderr, "%s %s\n", id, data)
 		}
 	}
 	return

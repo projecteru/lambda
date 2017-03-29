@@ -61,7 +61,7 @@ func runLambda(c *cli.Context) error {
 		log.Fatal(err)
 	}
 
-	pod, image, name, command, network, envs, cpu, mem, count := utils.GetParams(c)
+	pod, image, name, command, network, envs, cpu, mem, count, timeout := utils.GetParams(c)
 	if admin {
 		pod = config.AdminPod
 	}
@@ -73,7 +73,7 @@ func runLambda(c *cli.Context) error {
 	}
 
 	server := utils.PickServer(config.Servers)
-	code := rpc.RunAndWait(server, pod, image, name, command, network, envs, cpu, mem, count)
+	code := rpc.RunAndWait(server, pod, image, name, command, network, envs, cpu, mem, count, timeout)
 	if code == 0 {
 		return nil
 	}
@@ -120,6 +120,11 @@ func main() {
 		&cli.StringFlag{
 			Name:  "image",
 			Usage: "use image (default: define in config file)",
+		},
+		&cli.IntFlag{
+			Name:  "timeout",
+			Usage: "when to interrupt",
+			Value: 10,
 		},
 		&cli.Float64Flag{
 			Name:  "cpu",
