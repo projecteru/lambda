@@ -15,6 +15,7 @@ Must
 Optional
 
 * env
+* volumes
 
 Get from config (can override)
 

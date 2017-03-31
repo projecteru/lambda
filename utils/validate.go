@@ -6,7 +6,7 @@ import (
 )
 
 func GetParams(c *cli.Context) (pod, image, name, command, network string,
-	envs []string, cpu float64, mem int64, count, timeout int) {
+	envs, volumes []string, cpu float64, mem int64, count, timeout int) {
 
 	name = c.String("name")
 	if name == "" {
@@ -25,6 +25,7 @@ func GetParams(c *cli.Context) (pod, image, name, command, network string,
 	count = c.Int("count")
 	timeout = c.Int("timeout")
 	envs = c.StringSlice("env")
+	volumes = c.StringSlice("volume")
 	return
 }
 

@@ -61,11 +61,12 @@ func runLambda(c *cli.Context) error {
 		log.Fatal(err)
 	}
 
-	pod, image, name, command, network, envs, cpu, mem, count, timeout := utils.GetParams(c)
-	volumes := []string{}
+	pod, image, name, command, network, envs, volumes, cpu, mem, count, timeout := utils.GetParams(c)
 	if admin {
 		pod = config.Default.AdminPod
-		volumes = config.Default.AdminVolumes
+		for _, v := range config.Default.AdminVolumes {
+			volumes = append(volumes, v)
+		}
 	}
 	pod = utils.DefaultString(pod, config.Default.Pod)
 	network = utils.DefaultString(network, config.Default.Network)
@@ -110,7 +111,11 @@ func main() {
 		},
 		&cli.StringSliceFlag{
 			Name:  "env",
-			Usage: "set envs can use multiple times",
+			Usage: "set env can use multiple times",
+		},
+		&cli.StringSliceFlag{
+			Name:  "volume",
+			Usage: "set volume can use multiple times",
 		},
 		&cli.StringFlag{
 			Name:        "pod",
