@@ -64,15 +64,15 @@ func runLambda(c *cli.Context) error {
 	pod, image, name, command, network, envs, cpu, mem, count, timeout := utils.GetParams(c)
 	volumes := []string{}
 	if admin {
-		pod = config.AdminPod
-		volumes = config.Volumes
+		pod = config.Default.AdminPod
+		volumes = config.Default.AdminVolumes
 	}
-	if network == "" {
-		network = config.DefaultSDN
-	}
-	if image == "" {
-		image = config.BaseImage
-	}
+	pod = utils.DefaultString(pod, config.Default.Pod)
+	network = utils.DefaultString(network, config.Default.Network)
+	image = utils.DefaultString(image, config.Default.Image)
+	cpu = utils.DefaultFloat64(cpu, config.Default.Cpu)
+	mem = utils.DefaultInt64(mem, config.Default.Memory)
+	timeout = utils.DefaultInt(timeout, config.Default.Timeout)
 
 	server := utils.PickServer(config.Servers)
 	code := rpc.RunAndWait(server, pod, image, name, command,
@@ -101,10 +101,6 @@ func main() {
 			Usage: "config file path for lambda, in yaml",
 		},
 		&cli.StringFlag{
-			Name:  "pod",
-			Usage: "where to run",
-		},
-		&cli.StringFlag{
 			Name:  "name",
 			Usage: "name for this lambda",
 		},
@@ -117,27 +113,34 @@ func main() {
 			Usage: "set envs can use multiple times",
 		},
 		&cli.StringFlag{
-			Name:  "network",
-			Usage: "SDN name (default: define in config file)",
+			Name:        "pod",
+			Usage:       "where to run",
+			DefaultText: "in config file",
 		},
 		&cli.StringFlag{
-			Name:  "image",
-			Usage: "use image (default: define in config file)",
+			Name:        "network",
+			Usage:       "SDN name",
+			DefaultText: "in config file",
 		},
-		&cli.IntFlag{
-			Name:  "timeout",
-			Usage: "when to interrupt",
-			Value: 10,
+		&cli.StringFlag{
+			Name:        "image",
+			Usage:       "base image for running",
+			DefaultText: "in config file",
 		},
 		&cli.Float64Flag{
-			Name:  "cpu",
-			Usage: "how many cpu",
-			Value: 1.0,
+			Name:        "cpu",
+			Usage:       "how many cpu",
+			DefaultText: "in config file",
 		},
 		&cli.Int64Flag{
-			Name:  "mem",
-			Usage: "how many memory in bytes",
-			Value: 536870912,
+			Name:        "mem",
+			Usage:       "how many memory in bytes",
+			DefaultText: "in config file",
+		},
+		&cli.IntFlag{
+			Name:        "timeout",
+			Usage:       "when to interrupt",
+			DefaultText: "in config file",
 		},
 		&cli.IntFlag{
 			Name:  "count",
