@@ -68,6 +68,11 @@ func runLambda(c *cli.Context) error {
 			volumes = append(volumes, v)
 		}
 	}
+
+	if count > config.Concurrency {
+		log.Fatalf("Max concurrency limit %d", config.Concurrency)
+	}
+
 	pod = utils.DefaultString(pod, config.Default.Pod)
 	network = utils.DefaultString(network, config.Default.Network)
 	image = utils.DefaultString(image, config.Default.Image)
