@@ -6,6 +6,7 @@ type DefaultConfig struct {
 	Pod          string   `yaml:"pod"`          // Default Pod
 	Image        string   `yaml:"image"`        // Base Image
 	Network      string   `yaml:"network"`      // Default SDN
+	WorkingDir   string   `yaml:"working_dir"`  // Default CWD
 	Cpu          float64  `yaml:"cpu"`          // Default CPU
 	Memory       int64    `yaml:"memory"`       // Default Memory
 	Timeout      int      `yaml:"timeout"`      // Default timeout

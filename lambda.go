@@ -61,7 +61,7 @@ func runLambda(c *cli.Context) error {
 		log.Fatal(err)
 	}
 
-	pod, image, name, command, network, envs, volumes, cpu, mem, count, timeout := utils.GetParams(c)
+	pod, image, name, command, network, workingDir, envs, volumes, cpu, mem, count, timeout := utils.GetParams(c)
 	if admin {
 		pod = config.Default.AdminPod
 		for _, v := range config.Default.AdminVolumes {
@@ -75,6 +75,7 @@ func runLambda(c *cli.Context) error {
 
 	pod = utils.DefaultString(pod, config.Default.Pod)
 	network = utils.DefaultString(network, config.Default.Network)
+	workingDir = utils.DefaultString(workingDir, config.Default.WorkingDir)
 	image = utils.DefaultString(image, config.Default.Image)
 	cpu = utils.DefaultFloat64(cpu, config.Default.Cpu)
 	mem = utils.DefaultInt64(mem, config.Default.Memory)
@@ -82,7 +83,7 @@ func runLambda(c *cli.Context) error {
 
 	server := utils.PickServer(config.Servers)
 	code := rpc.RunAndWait(server, pod, image, name, command,
-		network, envs, volumes, cpu, mem, count, timeout)
+		network, workingDir, envs, volumes, cpu, mem, count, timeout)
 	if code == 0 {
 		return nil
 	}
@@ -130,6 +131,11 @@ func main() {
 		&cli.StringFlag{
 			Name:        "network",
 			Usage:       "SDN name",
+			DefaultText: "in config file",
+		},
+		&cli.StringFlag{
+			Name:        "working-dir",
+			Usage:       "use as current working dir",
 			DefaultText: "in config file",
 		},
 		&cli.StringFlag{

@@ -22,6 +22,7 @@ const (
 entrypoints:
   %s:
     cmd: "%s"
+	working_dir: "%s"
 `
 	FUCK_DOCKER = 8
 )
@@ -30,7 +31,7 @@ entrypoints:
 var EXIT_CODE = []byte{91, 101, 120, 105, 116, 99, 111, 100, 101, 93, 32}
 
 func RunAndWait(
-	server, pod, image, name, command, network string,
+	server, pod, image, name, command, network, workingDir string,
 	envs, volumes []string, cpu float64, mem int64, count, timeout int) (code int) {
 
 	conn, err := grpc.Dial(server, grpc.WithInsecure())
@@ -41,7 +42,7 @@ func RunAndWait(
 
 	c := pb.NewCoreRPCClient(conn)
 	opts := generateOpts(pod, image, name, command,
-		network, envs, volumes, cpu, mem, count)
+		network, workingDir, envs, volumes, cpu, mem, count)
 
 	resp, err := c.RunAndWait(context.Background(), opts)
 	if err != nil {
@@ -85,14 +86,14 @@ func RunAndWait(
 	return
 }
 
-func generateOpts(pod, image, name, command, network string,
+func generateOpts(pod, image, name, command, network, workingDir string,
 	envs, volumes []string, cpu float64, mem int64, count int) *pb.DeployOptions {
 	for i, env := range envs {
 		envs[i] = fmt.Sprintf("LAMBDA_%s", env)
 	}
 
 	opts := &pb.DeployOptions{
-		Specs:      generateSpecs(name, command, volumes),
+		Specs:      generateSpecs(name, command, workingDir, volumes),
 		Appname:    "lambda",
 		Image:      image,
 		Podname:    pod,
@@ -106,8 +107,8 @@ func generateOpts(pod, image, name, command, network string,
 	return opts
 }
 
-func generateSpecs(name, command string, volumes []string) string {
-	specs := fmt.Sprintf(appTmpl, name, command)
+func generateSpecs(name, command, workingDir string, volumes []string) string {
+	specs := fmt.Sprintf(appTmpl, name, command, workingDir)
 	if len(volumes) > 0 {
 		vol := map[string][]string{}
 		vol["volumes"] = volumes

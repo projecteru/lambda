@@ -8,6 +8,7 @@ default:
   pod: "develop"
   image: "hub.ricebook.net/lambda/python:centos-2017.03.21"
   network: "c1-test2"
+  working_dir: "/home/lambda/lambda"
   cpu: 1.0
   memory: 536870912
   timeout: 15
