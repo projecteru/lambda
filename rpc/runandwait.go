@@ -22,7 +22,7 @@ const (
 entrypoints:
   %s:
     cmd: "%s"
-	working_dir: "%s"
+    working_dir: "%s"
 `
 	FUCK_DOCKER = 8
 )
