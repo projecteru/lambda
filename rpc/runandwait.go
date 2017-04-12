@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"os"
 	"strconv"
 	"time"
 
@@ -24,7 +23,6 @@ entrypoints:
     cmd: "%s"
     working_dir: "%s"
 `
-	FUCK_DOCKER = 8
 )
 
 // [exitcode] bytes
@@ -74,14 +72,9 @@ func RunAndWait(
 			}
 			continue
 		}
-		data := msg.Data[FUCK_DOCKER:]
+		data := msg.Data
 		id := msg.ContainerId[:7]
-		define := msg.Data[:FUCK_DOCKER]
-		if define[0] == 1 {
-			fmt.Fprintf(os.Stdout, "%s %s\n", id, data)
-		} else {
-			fmt.Fprintf(os.Stderr, "%s %s\n", id, data)
-		}
+		fmt.Printf("%s %s\n", id, data)
 	}
 	return
 }
