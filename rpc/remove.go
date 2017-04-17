@@ -1,13 +1,13 @@
 package rpc
 
 import (
+	"context"
 	"io"
 	"sync"
 
 	log "github.com/Sirupsen/logrus"
 	"gitlab.ricebook.net/platform/core/rpc/gen"
 
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 

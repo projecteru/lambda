@@ -2,12 +2,12 @@ package rpc
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"strconv"
 	"time"
 
-	"golang.org/x/net/context"
 	"gopkg.in/yaml.v2"
 
 	log "github.com/Sirupsen/logrus"

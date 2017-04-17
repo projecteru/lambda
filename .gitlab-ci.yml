@@ -3,7 +3,6 @@ before_script:
   - "go get -d github.com/Sirupsen/logrus"
   - "go get -d gopkg.in/urfave/cli.v2"
   - "go get -d gopkg.in/yaml.v2"
-  - "go get -d golang.org/x/net/context"
   - "go get -d google.golang.org/grpc"
   - "git clone http://gitlab.ricebook.net/platform/core.git"
   - "mkdir -p $GOPATH/src/gitlab.ricebook.net/platform"
