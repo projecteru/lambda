@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"time"
 
 	"gopkg.in/yaml.v2"
 
@@ -22,6 +21,7 @@ entrypoints:
   %s:
     cmd: "%s"
     working_dir: "%s"
+    run_and_wait_timeout: %d
 `
 )
 
@@ -40,16 +40,13 @@ func RunAndWait(
 
 	c := pb.NewCoreRPCClient(conn)
 	opts := generateOpts(pod, image, name, command,
-		network, workingDir, envs, volumes, cpu, mem, count)
+		network, workingDir, envs, volumes,
+		cpu, mem, count, timeout)
 
 	resp, err := c.RunAndWait(context.Background(), opts)
 	if err != nil {
 		log.Fatalf("Run failed %v", err)
 	}
-
-	// log container ids and clean
-	containerIDs := NewCIDs()
-	time.AfterFunc(time.Duration(timeout)*time.Second, func() { Remove(server, containerIDs) })
 
 	for {
 		msg, err := resp.Recv()
@@ -60,9 +57,6 @@ func RunAndWait(
 		if err != nil {
 			log.Fatalf("Message invalid %v", err)
 		}
-
-		// log container id
-		containerIDs.Add(msg.ContainerId)
 
 		if bytes.HasPrefix(msg.Data, EXIT_CODE) {
 			ret := string(bytes.TrimLeft(msg.Data, string(EXIT_CODE)))
@@ -80,13 +74,13 @@ func RunAndWait(
 }
 
 func generateOpts(pod, image, name, command, network, workingDir string,
-	envs, volumes []string, cpu float64, mem int64, count int) *pb.DeployOptions {
+	envs, volumes []string, cpu float64, mem int64, count, timeout int) *pb.DeployOptions {
 	for i, env := range envs {
 		envs[i] = fmt.Sprintf("LAMBDA_%s", env)
 	}
 
 	opts := &pb.DeployOptions{
-		Specs:      generateSpecs(name, command, workingDir, volumes),
+		Specs:      generateSpecs(name, command, workingDir, volumes, timeout),
 		Appname:    "lambda",
 		Image:      image,
 		Podname:    pod,
@@ -100,8 +94,8 @@ func generateOpts(pod, image, name, command, network, workingDir string,
 	return opts
 }
 
-func generateSpecs(name, command, workingDir string, volumes []string) string {
-	specs := fmt.Sprintf(appTmpl, name, command, workingDir)
+func generateSpecs(name, command, workingDir string, volumes []string, timeout int) string {
+	specs := fmt.Sprintf(appTmpl, name, command, workingDir, timeout)
 	if len(volumes) > 0 {
 		vol := map[string][]string{}
 		vol["volumes"] = volumes
