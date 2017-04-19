@@ -62,7 +62,7 @@ func RunAndWait(
 			ret := string(bytes.TrimLeft(msg.Data, string(EXIT_CODE)))
 			code, err = strconv.Atoi(ret)
 			if err != nil {
-				log.Fatalf("exit with unknown %s %s", ret, err)
+				log.Fatalf("exit with %s", ret)
 			}
 			continue
 		}
