@@ -1,17 +1,19 @@
 package rpc
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 
 	"gopkg.in/yaml.v2"
 
 	log "github.com/Sirupsen/logrus"
 	"gitlab.ricebook.net/platform/core/rpc/gen"
-
+	"gitlab.ricebook.net/platform/lambda/types"
 	"google.golang.org/grpc"
 )
 
@@ -27,25 +29,47 @@ entrypoints:
 
 // [exitcode] bytes
 var EXIT_CODE = []byte{91, 101, 120, 105, 116, 99, 111, 100, 101, 93, 32}
+var ENTER = []byte{10}
+var SPLIT = []byte{62, 32}
 
-func RunAndWait(
-	server, pod, image, name, command, network, workingDir string,
-	envs, volumes []string, cpu float64, mem int64, count, timeout int) (code int) {
-
+func RunAndWait(server string, runParams types.RunParams) (code int) {
 	conn, err := grpc.Dial(server, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatalf("[RunAndWait] did not connect: %v", err)
 	}
 	defer conn.Close()
 
 	c := pb.NewCoreRPCClient(conn)
-	opts := generateOpts(pod, image, name, command,
-		network, workingDir, envs, volumes,
-		cpu, mem, count, timeout)
+	opts := generateOpts(runParams)
 
-	resp, err := c.RunAndWait(context.Background(), opts)
+	resp, err := c.RunAndWait(context.Background())
 	if err != nil {
-		log.Fatalf("Run failed %v", err)
+		log.Fatalf("[RunAndWait] Run failed %v", err)
+	}
+
+	if resp.Send(&pb.RunAndWaitOptions{DeployOptions: opts}) != nil {
+		log.Fatalf("[RunAndWait] Send options failed %v", err)
+	}
+
+	if runParams.OpenStdin {
+		go func() {
+			// 获得输入
+			scanner := bufio.NewScanner(os.Stdin)
+			for scanner.Scan() {
+				command := scanner.Bytes()
+				if len(command) == 0 {
+					continue
+				}
+				log.Debugf("input: %s", command)
+				command = append(command, ENTER...)
+				if err = resp.Send(&pb.RunAndWaitOptions{Cmd: command}); err != nil {
+					log.Errorf("[RunAndWait] Send command %s error: %v", command, err)
+				}
+			}
+			if err := scanner.Err(); err != nil {
+				log.Errorf("[RunAndWait] Parse log failed, %v", err)
+			}
+		}()
 	}
 
 	for {
@@ -55,41 +79,44 @@ func RunAndWait(
 		}
 
 		if err != nil {
-			log.Fatalf("Message invalid %v", err)
+			log.Fatalf("[RunAndWait] Message invalid %v", err)
 		}
 
 		if bytes.HasPrefix(msg.Data, EXIT_CODE) {
 			ret := string(bytes.TrimLeft(msg.Data, string(EXIT_CODE)))
 			code, err = strconv.Atoi(ret)
 			if err != nil {
-				log.Fatalf("exit with %s", ret)
+				log.Fatalf("[RunAndWait] exit with %s", ret)
 			}
 			continue
 		}
 		data := msg.Data
 		id := msg.ContainerId[:7]
-		fmt.Printf("%s %s\n", id, data)
+		if !bytes.HasSuffix(data, SPLIT) {
+			data = append(data, ENTER...)
+		}
+		fmt.Printf("[%s]: %s", id, data)
 	}
 	return
 }
 
-func generateOpts(pod, image, name, command, network, workingDir string,
-	envs, volumes []string, cpu float64, mem int64, count, timeout int) *pb.DeployOptions {
-	for i, env := range envs {
-		envs[i] = fmt.Sprintf("LAMBDA_%s", env)
+func generateOpts(rp types.RunParams) *pb.DeployOptions {
+	for i, env := range rp.Envs {
+		rp.Envs[i] = fmt.Sprintf("LAMBDA_%s", env)
 	}
-
+	spaces := generateSpecs(rp.Name, rp.Command, rp.Workingdir, rp.Volumes, rp.Timeout)
 	opts := &pb.DeployOptions{
-		Specs:      generateSpecs(name, command, workingDir, volumes, timeout),
+		Specs:      spaces,
 		Appname:    "lambda",
-		Image:      image,
-		Podname:    pod,
-		Entrypoint: name,
-		CpuQuota:   cpu,
-		Memory:     mem,
-		Count:      int32(count),
-		Networks:   map[string]string{network: ""},
-		Env:        envs,
+		Image:      rp.Image,
+		Podname:    rp.Pod,
+		Entrypoint: rp.Name,
+		CpuQuota:   rp.CPU,
+		Memory:     rp.Mem,
+		Count:      int32(rp.Count),
+		Networks:   map[string]string{rp.Network: ""},
+		Env:        rp.Envs,
+		OpenStdin:  rp.OpenStdin,
 	}
 	return opts
 }

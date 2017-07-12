@@ -1,14 +1,15 @@
 servers:
-  - c1-eru-1:5001
+  - c1-eru-1:5002
 concurrency: 15
 default:
   adminpod: "develop"
   adminvolumes:
     - "/tmp:/tmp/host"
   pod: "develop"
-  image: "hub.ricebook.net/lambda/python:centos-2017.03.21"
+  image: "hub.ricebook.net/lambda/python:centos-2017.04.11"
   network: "c1-test2"
   working_dir: "/home/lambda/lambda"
   cpu: 1.0
   memory: 536870912
   timeout: 15
+  openstdin: false

@@ -61,29 +61,22 @@ func runLambda(c *cli.Context) error {
 		log.Fatal(err)
 	}
 
-	pod, image, name, command, network, workingDir, envs, volumes, cpu, mem, count, timeout := utils.GetParams(c)
+	runParams := utils.GetParams(c)
 	if admin {
-		pod = config.Default.AdminPod
+		runParams.Pod = config.Default.AdminPod
 		for _, v := range config.Default.AdminVolumes {
-			volumes = append(volumes, v)
+			runParams.Volumes = append(runParams.Volumes, v)
 		}
 	}
 
-	if count > config.Concurrency {
+	if runParams.Count > config.Concurrency {
 		log.Fatalf("Max concurrency limit %d", config.Concurrency)
 	}
 
-	pod = utils.DefaultString(pod, config.Default.Pod)
-	network = utils.DefaultString(network, config.Default.Network)
-	workingDir = utils.DefaultString(workingDir, config.Default.WorkingDir)
-	image = utils.DefaultString(image, config.Default.Image)
-	cpu = utils.DefaultFloat64(cpu, config.Default.Cpu)
-	mem = utils.DefaultInt64(mem, config.Default.Memory)
-	timeout = utils.DefaultInt(timeout, config.Default.Timeout)
+	runParams = utils.RebuildParams(runParams, config.Default)
 
 	server := utils.PickServer(config.Servers)
-	code := rpc.RunAndWait(server, pod, image, name, command,
-		network, workingDir, envs, volumes, cpu, mem, count, timeout)
+	code := rpc.RunAndWait(server, runParams)
 	if code == 0 {
 		return nil
 	}
@@ -175,6 +168,12 @@ func main() {
 			Aliases:     []string{"d"},
 			Value:       false,
 			Destination: &debug,
+		},
+		&cli.BoolFlag{
+			Name:    "interactive",
+			Usage:   "open stdin for container",
+			Aliases: []string{"i"},
+			Value:   false,
 		},
 	}
 	app.Action = runLambda
