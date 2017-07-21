@@ -118,6 +118,12 @@ func generateOpts(rp types.RunParams) *pb.DeployOptions {
 		Env:        rp.Envs,
 		OpenStdin:  rp.OpenStdin,
 	}
+
+	// check opts
+	if opts.Count < 0 || (opts.OpenStdin && opts.Count != 1) {
+		log.Fatalf("[RunAndWait] Parameter error")
+	}
+
 	return opts
 }
 
