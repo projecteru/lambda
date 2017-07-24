@@ -57,9 +57,6 @@ func RunAndWait(server string, runParams types.RunParams) (code int) {
 			scanner := bufio.NewScanner(os.Stdin)
 			for scanner.Scan() {
 				command := scanner.Bytes()
-				if len(command) == 0 {
-					continue
-				}
 				log.Debugf("input: %s", command)
 				command = append(command, ENTER...)
 				if err = resp.Send(&pb.RunAndWaitOptions{Cmd: command}); err != nil {
