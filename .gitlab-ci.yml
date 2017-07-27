@@ -1,19 +1,13 @@
-image: "hub.ricebook.net/base/centos:onbuild-2017.02.17"
-before_script:
-  - "go get -d github.com/Sirupsen/logrus"
-  - "go get -d gopkg.in/urfave/cli.v2"
-  - "go get -d gopkg.in/yaml.v2"
-  - "go get -d google.golang.org/grpc"
-  - "git clone http://gitlab.ricebook.net/platform/core.git"
-  - "mkdir -p $GOPATH/src/gitlab.ricebook.net/platform"
-  - "ln -s $CI_PROJECT_DIR/core $GOPATH/src/gitlab.ricebook.net/platform/core"
-  - "ln -s $CI_PROJECT_DIR $GOPATH/src/gitlab.ricebook.net/platform/lambda"
+image: "hub.ricebook.net/base/centos:onbuild-eru-core-2017.07.26"
 rpm:
   script:
+    - "cp -r $CI_PROJECT_DIR $GOPATH/src/gitlab.ricebook.net/platform/"
+    - "cd $GOPATH/src/gitlab.ricebook.net/platform/lambda"
     - "make build"
     - "echo 'start make rpm'"
     - "./make-rpm"
     - "echo 'make rpm done'"
+    - "cp eru-lambda*.rpm $CI_PROJECT_DIR"
   artifacts:
     paths:
       - "eru-lambda*.rpm"

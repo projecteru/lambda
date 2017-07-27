@@ -11,9 +11,9 @@ GO_LDFLAGS ?= -s -X $(REPO_PATH)/versioninfo.REVISION=$(REVISION) \
 deps:
 	glide i
 
-build:
+build: deps
 	go build -ldflags "$(GO_LDFLAGS)" -a -tags netgo -installsuffix netgo -o lambda
 
-test:
-	go tool vet .
-	go test ./...
+test: deps
+	go vet `go list ./... | grep -v '/vendor/'`
+	go test -v `glide nv`
