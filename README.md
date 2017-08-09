@@ -1,5 +1,6 @@
-Eru Lambda
+Lambda
 =============
+[![CircleCI](https://circleci.com/gh/projecteru2/lambda/tree/master.svg?style=shield)](https://circleci.com/gh/projecteru2/lambda/tree/master)
 
 Run anything in container on Eru
 

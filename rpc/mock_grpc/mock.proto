@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package pb;
+
+service CoreRPC {
+    rpc RunAndWait(stream RunAndWaitOptions) returns (stream RunAndWaitMessage);
+}
+
+message DeployOptions {
+    string specs = 1;
+    string appname = 2;
+    string image = 3;
+    string podname = 4;
+    string nodename = 5;
+    string entrypoint = 6;
+    string extra_args = 7;
+    double cpu_quota = 8;
+    int32 count = 9;
+    int64 memory = 10;
+    repeated string env = 11;
+    map<string, string> networks = 12;
+    bool raw = 13;
+    bool debug = 14;
+    bool openStdin = 15;
+}
+
+message RunAndWaitOptions{
+    DeployOptions DeployOptions = 1;
+    bytes Cmd = 2;
+} 
+
+message RunAndWaitMessage {
+    string container_id = 1;
+    bytes data = 2;
+}
