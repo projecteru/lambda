@@ -17,7 +17,7 @@ type DefaultConfig struct {
 type Config struct {
 	Servers     []string      `yaml:"servers"` // Cores' address and port
 	Default     DefaultConfig `yaml:"default"`
-	Concurrency int           `yaml:concurrency"` // Default concurrency
+	Concurrency int           `yaml:"concurrency"` // Default concurrency
 }
 
 type RunParams struct {
