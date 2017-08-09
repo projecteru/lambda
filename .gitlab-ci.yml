@@ -1,4 +1,5 @@
 image: "hub.ricebook.net/base/centos:onbuild-eru-core-2017.07.26"
+<<<<<<< HEAD
 stages:
   - test
   - build
@@ -20,10 +21,22 @@ build:
     paths:
       - "lambda"
     expire_in: 1 week
+=======
+>>>>>>> 5904472b7725d30813761d55744a9c97e3fa2d5b
 rpm:
   stage: rpm
   script:
+<<<<<<< HEAD
     - make rpm
+=======
+    - "cp -r $CI_PROJECT_DIR $GOPATH/src/gitlab.ricebook.net/platform/"
+    - "cd $GOPATH/src/gitlab.ricebook.net/platform/lambda"
+    - "make build"
+    - "echo 'start make rpm'"
+    - "./make-rpm"
+    - "echo 'make rpm done'"
+    - "cp eru-lambda*.rpm $CI_PROJECT_DIR"
+>>>>>>> 5904472b7725d30813761d55744a9c97e3fa2d5b
   artifacts:
     paths:
       - "eru-lambda*.rpm"

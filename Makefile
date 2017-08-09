@@ -17,6 +17,7 @@ build: deps
 test: deps
 	go vet `go list ./... | grep -v '/vendor/'`
 	go test -v `glide nv`
+
 rpm:
 	ROOT="`pwd`/build"
 	BIN="$ROOT/usr/bin"
