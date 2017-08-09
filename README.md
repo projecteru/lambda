@@ -1,7 +1,7 @@
-Lambda runner
+Eru Lambda
 =============
 
-Run anything in container.
+Run anything in container on Eru
 
 Params
 ======
@@ -25,6 +25,7 @@ Get from config (can override)
 * cpu
 * mem
 * timeout
+* stdin
 
 Default
 
@@ -43,3 +44,19 @@ pod and volumes will be rewrited.
 
 their values get from config file.
 
+DEV
+======
+
+#### Test
+
+```make test```
+
+#### Build
+
+```make build```
+
+#### RPM
+
+```./make-rpm```
+
+To make rpm, you should install [fpm](https://github.com/jordansissel/fpm) first.

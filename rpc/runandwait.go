@@ -12,8 +12,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	log "github.com/Sirupsen/logrus"
-	"gitlab.ricebook.net/platform/core/rpc/gen"
-	"gitlab.ricebook.net/platform/lambda/types"
+	"github.com/projecteru2/lambda/types"
 	"google.golang.org/grpc"
 )
 

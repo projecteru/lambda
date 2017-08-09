@@ -6,10 +6,10 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"gitlab.ricebook.net/platform/lambda/rpc"
-	"gitlab.ricebook.net/platform/lambda/types"
-	"gitlab.ricebook.net/platform/lambda/utils"
-	"gitlab.ricebook.net/platform/lambda/versioninfo"
+	"github.com/projecteru2/lambda/rpc"
+	"github.com/projecteru2/lambda/types"
+	"github.com/projecteru2/lambda/utils"
+	"github.com/projecteru2/lambda/versioninfo"
 	"gopkg.in/urfave/cli.v2"
 	"gopkg.in/yaml.v2"
 )
@@ -170,9 +170,9 @@ func main() {
 			Destination: &debug,
 		},
 		&cli.BoolFlag{
-			Name:    "interactive",
+			Name:    "stdin",
 			Usage:   "open stdin for container",
-			Aliases: []string{"i"},
+			Aliases: []string{"s"},
 			Value:   false,
 		},
 	}

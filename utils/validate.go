@@ -2,7 +2,7 @@ package utils
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"gitlab.ricebook.net/platform/lambda/types"
+	"github.com/projecteru2/lambda/types"
 	"gopkg.in/urfave/cli.v2"
 )
 
@@ -20,7 +20,7 @@ func GetParams(c *cli.Context) types.RunParams {
 		Timeout:    c.Int("timeout"),
 		Envs:       c.StringSlice("env"),
 		Volumes:    c.StringSlice("volume"),
-		OpenStdin:  c.Bool("interactive"),
+		OpenStdin:  c.Bool("stdin"),
 	}
 
 	if runParams.Name == "" {

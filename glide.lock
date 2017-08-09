@@ -8,9 +8,9 @@ imports:
   - ptypes/any
 - name: github.com/Sirupsen/logrus
   version: a3f95b5c423586578a4e099b11a46c2479628cac
-- name: gitlab.ricebook.net/platform/core
+- name: github.com/projecteru2/core
   version: 33662e0ead64073fd7ec6dedc66da3e29d6a4f91
-  repo: http://gitlab.ricebook.net/platform/core.git
+  repo: https://github.com/projecteru2/core.git
   subpackages:
   - rpc/gen
 - name: golang.org/x/net
