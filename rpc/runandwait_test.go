@@ -60,14 +60,15 @@ func (m *mockCoreSrv) RunAndWait(s pb.CoreRPC_RunAndWaitServer) error {
 }
 
 func TestRunAndWait(t *testing.T) {
-	s, err := net.Listen("tcp", "127.0.0.1:8866")
+	host := "127.0.0.1:8886"
+	s, err := net.Listen("tcp", host)
 	assert.NoError(t, err)
 	grpcServer := grpc.NewServer()
 	srv := &mockCoreSrv{}
 	pb.RegisterCoreRPCServer(grpcServer, srv)
 	go grpcServer.Serve(s)
 
-	server := "127.0.0.1:8866"
+	server := host
 	runParams := types.RunParams{
 		Command: "date",
 		Name:    "hello",
@@ -78,32 +79,33 @@ func TestRunAndWait(t *testing.T) {
 	grpcServer.GracefulStop()
 }
 
-//func TestRunAndWaitTimeout(t *testing.T) {
-//	s, err := net.Listen("tcp", "127.0.0.1:8866")
-//	assert.NoError(t, err)
-//	grpcServer := grpc.NewServer()
-//	srv := &mockCoreSrv{}
-//	pb.RegisterCoreRPCServer(grpcServer, srv)
-//	go grpcServer.Serve(s)
-//
-//	timeout := 1
-//	timer := time.NewTimer(time.Duration(timeout+1) * time.Second)
-//	runCh := make(chan interface{})
-//	server := "127.0.0.1:8866"
-//	runParams := types.RunParams{
-//		Command: "date",
-//		Name:    "hello",
-//		Timeout: timeout,
-//	}
-//	go func() {
-//		code := RunAndWait(server, runParams)
-//		assert.Equal(t, 0, code)
-//		runCh <- code
-//	}()
-//	select {
-//	case <-timer.C:
-//		t.Error("timeout failed!")
-//	case <-runCh:
-//		grpcServer.GracefulStop()
-//	}
-//}
+func TestRunAndWaitTimeout(t *testing.T) {
+	host := "127.0.0.1:8887"
+	s, err := net.Listen("tcp", host)
+	assert.NoError(t, err)
+	grpcServer := grpc.NewServer()
+	srv := &mockCoreSrv{}
+	pb.RegisterCoreRPCServer(grpcServer, srv)
+	go grpcServer.Serve(s)
+
+	timeout := 1
+	timer := time.NewTimer(time.Duration(timeout+1) * time.Second)
+	runCh := make(chan interface{})
+	server := host
+	runParams := types.RunParams{
+		Command: "date",
+		Name:    "hello",
+		Timeout: timeout,
+	}
+	go func() {
+		code := RunAndWait(server, runParams)
+		assert.Equal(t, 0, code)
+		runCh <- code
+	}()
+	select {
+	case <-timer.C:
+		t.Error("timeout failed!")
+	case <-runCh:
+		grpcServer.GracefulStop()
+	}
+}
