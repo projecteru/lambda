@@ -1,6 +1,7 @@
 Lambda
 =============
 [![CircleCI](https://circleci.com/gh/projecteru2/lambda/tree/master.svg?style=shield)](https://circleci.com/gh/projecteru2/lambda/tree/master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a91da2853c4c4dc3b155f3397778f47e)](https://www.codacy.com/app/CMGS/lambda?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=projecteru2/lambda&amp;utm_campaign=Badge_Grade)
 
 Run anything in container on Eru
 
