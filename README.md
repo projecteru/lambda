@@ -62,3 +62,16 @@ DEV
 ```./make-rpm```
 
 To make rpm, you should install [fpm](https://github.com/jordansissel/fpm) first.
+
+Dockerized Lambda
+================
+
+Image: [projecteru2/lambda](https://hub.docker.com/r/projecteru2/lambda/)
+
+```shell
+docker run -it --rm -e IN_DOCKER=1 \
+  --name eru-lambda --net host \
+  -v <HOST_CONFIG_PATH>:/etc/eru/lambda.yaml \
+  projecteru2/lambda \
+  /usr/bin/lambda <PARAMS>
+```
