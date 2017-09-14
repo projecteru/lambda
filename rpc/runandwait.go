@@ -113,6 +113,7 @@ func generateOpts(rp types.RunParams) *pb.DeployOptions {
 		Count:      int32(rp.Count),
 		Networks:   map[string]string{rp.Network: ""},
 		Env:        rp.Envs,
+		Raw:        rp.Raw,
 		OpenStdin:  rp.OpenStdin,
 	}
 

@@ -34,4 +34,5 @@ type RunParams struct {
 	Volumes    []string
 	OpenStdin  bool
 	Pod        string
+	Raw        bool
 }

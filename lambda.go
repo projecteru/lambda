@@ -17,6 +17,7 @@ import (
 var (
 	debug bool
 	admin bool
+	raw   bool
 )
 
 func setupLog(l string) error {
@@ -68,6 +69,7 @@ func runLambda(c *cli.Context) error {
 			runParams.Volumes = append(runParams.Volumes, v)
 		}
 	}
+	runParams.Raw = raw
 
 	if runParams.Count > config.Concurrency {
 		log.Fatalf("Max concurrency limit %d", config.Concurrency)
@@ -155,6 +157,12 @@ func main() {
 			Name:  "count",
 			Usage: "how many containers",
 			Value: 1,
+		},
+		&cli.BoolFlag{
+			Name:        "raw",
+			Usage:       "use image without lambda",
+			Value:       false,
+			Destination: &raw,
 		},
 		&cli.BoolFlag{
 			Name:        "admin",
