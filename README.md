@@ -5,6 +5,8 @@ Lambda
 
 Run anything in container on Eru
 
+NOTE: Image should have lambda user for running command, if there was no lambda user inside, please use raw mode.
+
 Params
 ======
 
@@ -18,6 +20,7 @@ Optional
 
 * env
 * volumes
+* raw
 
 Get from config (can override)
 
