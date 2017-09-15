@@ -7,7 +7,7 @@ CONF="$ROOT/etc/eru"
 mkdir -p $BIN
 mkdir -p $CONF
 
-mv lambda $BIN
+mv eru-lambda $BIN
 mv lambda.yaml.example $CONF
 
 VERSION=$(cat VERSION)

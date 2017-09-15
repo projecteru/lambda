@@ -5,7 +5,7 @@ Lambda
 
 Run anything in container on Eru
 
-NOTE: Image should have lambda user for running command, if there was no lambda user inside, please use raw mode.
+NOTE: Image should have a user named lambda for running command, if there was no lambda user inside, please use raw mode.
 
 Params
 ======
@@ -72,9 +72,10 @@ Dockerized Lambda
 Image: [projecteru2/lambda](https://hub.docker.com/r/projecteru2/lambda/)
 
 ```shell
-docker run -it --rm -e IN_DOCKER=1 \
-  --name eru-lambda --net host \
+docker run -it --rm \
+  --net host \
+  --name eru-lambda \
   -v <HOST_CONFIG_DIR_PATH>:/etc/eru \
   projecteru2/lambda \
-  /usr/bin/lambda <PARAMS>
+  /usr/bin/eru-lambda <PARAMS>
 ```

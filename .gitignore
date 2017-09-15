@@ -2,4 +2,6 @@ config.yaml
 lambda
 lambda-run
 run-lambda
+eru-lambda
 vendor/*
+

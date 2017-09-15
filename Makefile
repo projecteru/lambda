@@ -12,7 +12,7 @@ deps:
 	glide i
 
 build: deps
-	go build -ldflags "$(GO_LDFLAGS)" -a -tags netgo -installsuffix netgo -o lambda
+	go build -ldflags "$(GO_LDFLAGS)" -a -tags netgo -installsuffix netgo -o eru-lambda
 
 test: deps
 	go vet `go list ./... | grep -v '/vendor/'`
