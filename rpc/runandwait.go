@@ -18,11 +18,11 @@ import (
 )
 
 const (
-	appTmpl = `appname: "lambda"
+	appTmpl = `appname: lambda
 entrypoints:
   %s:
-    cmd: "%s"
-    working_dir: "%s"
+    cmd: %s
+    working_dir: %s
     run_and_wait_timeout: %d
 `
 )
