@@ -7,8 +7,9 @@ Run anything in container on Eru
 
 NOTE: Image should have a user named lambda for running command, if there was no lambda user inside, please use raw mode.
 
-Params
-======
+We build a run-lambda image named [projecteru2/footstone:run-lambda](https://hub.docker.com/r/projecteru2/footstone/). This is the [Dockerfile](https://github.com/projecteru2/footstone/blob/master/run-lambda/Dockerfile).
+
+### Params
 
 Must
 
@@ -40,8 +41,7 @@ Default
 * help
 * version
 
-Admin
-======
+### Admin mode
 
 if admin is `True`
 
@@ -49,25 +49,23 @@ pod and volumes will be rewrited.
 
 their values get from config file.
 
-DEV
-======
+### Developing
 
 #### Test
 
-```make test```
+`make test`
 
 #### Build
 
-```make build```
+`make build`
 
 #### RPM
 
-```./make-rpm```
+`./make-rpm`
 
 To make rpm, you should install [fpm](https://github.com/jordansissel/fpm) first.
 
-Dockerized Lambda
-================
+### Dockerized Lambda
 
 Image: [projecteru2/lambda](https://hub.docker.com/r/projecteru2/lambda/)
 
