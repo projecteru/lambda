@@ -23,7 +23,6 @@ entrypoints:
   %s:
     cmd: %s
     working_dir: %s
-    run_and_wait_timeout: %d
 `
 )
 
@@ -47,7 +46,7 @@ func RunAndWait(server string, runParams types.RunParams) (code int) {
 		log.Fatalf("[RunAndWait] Run failed %v", err)
 	}
 
-	if resp.Send(&pb.RunAndWaitOptions{DeployOptions: opts}) != nil {
+	if resp.Send(&pb.RunAndWaitOptions{DeployOptions: opts, Timeout: int32(runParams.Timeout)}) != nil {
 		log.Fatalf("[RunAndWait] Send options failed %v", err)
 	}
 
@@ -101,7 +100,7 @@ func generateOpts(rp types.RunParams) *pb.DeployOptions {
 	for i, env := range rp.Envs {
 		rp.Envs[i] = fmt.Sprintf("LAMBDA_%s", env)
 	}
-	specs := generateSpecs(rp.Name, rp.Command, rp.Workingdir, rp.Volumes, rp.Timeout)
+	specs := generateSpecs(rp.Name, rp.Command, rp.Workingdir, rp.Volumes)
 	opts := &pb.DeployOptions{
 		Specs:      specs,
 		Appname:    "lambda",
@@ -125,8 +124,8 @@ func generateOpts(rp types.RunParams) *pb.DeployOptions {
 	return opts
 }
 
-func generateSpecs(name, command, workingDir string, volumes []string, timeout int) string {
-	specs := fmt.Sprintf(appTmpl, name, command, workingDir, timeout)
+func generateSpecs(name, command, workingDir string, volumes []string) string {
+	specs := fmt.Sprintf(appTmpl, name, command, workingDir)
 	if len(volumes) > 0 {
 		vol := map[string][]string{}
 		vol["volumes"] = volumes

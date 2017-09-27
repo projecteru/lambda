@@ -1,5 +1,5 @@
 hash: a64f1f98e64cc8080ab631309ce8d048d3cd7e1710711fd375fb643c9fabb40e
-updated: 2017-09-08T15:22:39.660988361+08:00
+updated: 2017-09-28T00:42:34.779700651+08:00
 imports:
 - name: github.com/docker/distribution
   version: e18fe7d3f4573faac5a32a0df3322a4812969c92
@@ -56,7 +56,7 @@ imports:
 - name: github.com/pkg/errors
   version: c605e284fe17294bda444b34710735b29d1a9d90
 - name: github.com/projecteru2/core
-  version: 8ec5c84c21f7caf407a62036469506c51afce1ab
+  version: 5c9b779bc8e5b5ff682f9b6b8afb080411781733
   repo: https://github.com/projecteru2/core.git
   subpackages:
   - rpc/gen
@@ -113,7 +113,7 @@ imports:
   - tap
   - transport
 - name: gopkg.in/urfave/cli.v2
-  version: 50a0fdeea6330854c7b05371cce1fac8c7e636d2
+  version: 61c3eb6ba1da1df17cd50f1456a9252d92bf5edd
 - name: gopkg.in/yaml.v2
   version: 25c4ec802a7d637f88d584ab26798e94ad14c13b
 testImports:

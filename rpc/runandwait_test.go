@@ -18,8 +18,7 @@ func TestGenerateSpecs(t *testing.T) {
 	command := "date"
 	workingDir := "/temp"
 	volumes := []string{"/share"}
-	timeout := 60
-	specs := generateSpecs(name, command, workingDir, volumes, timeout)
+	specs := generateSpecs(name, command, workingDir, volumes)
 	t.Log(specs)
 }
 
@@ -44,7 +43,7 @@ func (m *mockCoreSrv) RunAndWait(s pb.CoreRPC_RunAndWaitServer) error {
 		return err
 	}
 	e := spec.Entrypoints["hello"]
-	timeout := e.RunAndWaitTimeout
+	timeout := int(opts.Timeout)
 	cmd := e.Command
 	for i := 0; i < 5 && timeout > 0; i++ {
 		t := time.Now().Second()
