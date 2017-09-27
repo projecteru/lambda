@@ -101,9 +101,9 @@ func generateOpts(rp types.RunParams) *pb.DeployOptions {
 	for i, env := range rp.Envs {
 		rp.Envs[i] = fmt.Sprintf("LAMBDA_%s", env)
 	}
-	spaces := generateSpecs(rp.Name, rp.Command, rp.Workingdir, rp.Volumes, rp.Timeout)
+	specs := generateSpecs(rp.Name, rp.Command, rp.Workingdir, rp.Volumes, rp.Timeout)
 	opts := &pb.DeployOptions{
-		Specs:      spaces,
+		Specs:      specs,
 		Appname:    "lambda",
 		Image:      rp.Image,
 		Podname:    rp.Pod,
