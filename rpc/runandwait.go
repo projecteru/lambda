@@ -12,6 +12,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	log "github.com/Sirupsen/logrus"
+	enginecontainer "github.com/docker/docker/api/types/container"
 	pb "github.com/projecteru2/core/rpc/gen"
 	"github.com/projecteru2/lambda/types"
 	"google.golang.org/grpc"
@@ -98,19 +99,26 @@ func RunAndWait(server string, runParams types.RunParams) (code int) {
 
 func generateOpts(rp types.RunParams) *pb.DeployOptions {
 	specs := generateSpecs(rp.Name, rp.Command, rp.Workingdir, rp.Volumes)
+
+	networkmode := enginecontainer.NetworkMode(rp.Network)
+	networks := map[string]string{rp.Network: ""}
+	if !networkmode.IsUserDefined() {
+		networks = map[string]string{}
+	}
 	opts := &pb.DeployOptions{
-		Specs:      specs,
-		Appname:    "lambda",
-		Image:      rp.Image,
-		Podname:    rp.Pod,
-		Entrypoint: rp.Name,
-		CpuQuota:   rp.CPU,
-		Memory:     rp.Mem,
-		Count:      int32(rp.Count),
-		Networks:   map[string]string{rp.Network: ""},
-		Env:        rp.Envs,
-		Raw:        rp.Raw,
-		OpenStdin:  rp.OpenStdin,
+		Specs:       specs,
+		Appname:     "lambda",
+		Image:       rp.Image,
+		Podname:     rp.Pod,
+		Entrypoint:  rp.Name,
+		CpuQuota:    rp.CPU,
+		Memory:      rp.Mem,
+		Count:       int32(rp.Count),
+		Networks:    networks,
+		Networkmode: rp.Network,
+		Env:         rp.Envs,
+		Raw:         rp.Raw,
+		OpenStdin:   rp.OpenStdin,
 	}
 
 	// check opts

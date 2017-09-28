@@ -9,3 +9,7 @@ import:
 - package: gopkg.in/urfave/cli.v2
   version: ^2
 - package: gopkg.in/yaml.v2
+- package: github.com/docker/docker
+  version: v17.05.0-ce-rc3
+  subpackages:
+  - api/types/container
