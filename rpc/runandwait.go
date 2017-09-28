@@ -97,9 +97,6 @@ func RunAndWait(server string, runParams types.RunParams) (code int) {
 }
 
 func generateOpts(rp types.RunParams) *pb.DeployOptions {
-	for i, env := range rp.Envs {
-		rp.Envs[i] = fmt.Sprintf("LAMBDA_%s", env)
-	}
 	specs := generateSpecs(rp.Name, rp.Command, rp.Workingdir, rp.Volumes)
 	opts := &pb.DeployOptions{
 		Specs:      specs,
